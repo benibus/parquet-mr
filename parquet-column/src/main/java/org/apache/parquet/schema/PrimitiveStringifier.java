@@ -448,4 +448,19 @@ public abstract class PrimitiveStringifier {
       }
     }
   };
+
+  static final PrimitiveStringifier FLOAT16_STRINGIFIER = new BinaryStringifierBase("FLOAT16_STRINGIFIER") {
+    private static final int SHORT_MASK = 0x0000FFFF;
+
+    @Override
+    String stringifyNotNull(Binary value) {
+      if (value.length() != 2) {
+        return BINARY_INVALID;
+      }
+      ByteBuffer buffer = value.toByteBuffer().order(ByteOrder.LITTLE_ENDIAN);
+      // TODO: Convert to native float and redirect to DEFAULT_STRINGIFIER
+      short shortValue = buffer.getShort(buffer.position());
+      return UNSIGNED_STRINGIFIER.stringify(shortValue & SHORT_MASK);
+    }
+  };
 }

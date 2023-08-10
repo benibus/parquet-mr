@@ -31,6 +31,7 @@ import static org.apache.parquet.schema.LogicalTypeAnnotation.TimeUnit.NANOS;
 import static org.apache.parquet.schema.LogicalTypeAnnotation.bsonType;
 import static org.apache.parquet.schema.LogicalTypeAnnotation.dateType;
 import static org.apache.parquet.schema.LogicalTypeAnnotation.decimalType;
+import static org.apache.parquet.schema.LogicalTypeAnnotation.float16Type;
 import static org.apache.parquet.schema.LogicalTypeAnnotation.intType;
 import static org.apache.parquet.schema.LogicalTypeAnnotation.jsonType;
 import static org.apache.parquet.schema.LogicalTypeAnnotation.stringType;
@@ -401,6 +402,18 @@ public class TestTypeBuildersWithLogicalTypes {
         () -> Types.required(FIXED_LEN_BYTE_ARRAY).length(10).as(uuidType()).named("uuid_field").toString());
     assertThrows("Should fail with invalid type", IllegalStateException.class,
         () -> Types.required(BINARY).as(uuidType()).named("uuid_field").toString());
+  }
+
+  @Test
+  public void testFloat16LogicalType() {
+    assertEquals(
+      "required fixed_len_byte_array(2) float16_field (FLOAT16)",
+      Types.required(FIXED_LEN_BYTE_ARRAY).length(2).as(float16Type()).named("float16_field").toString());
+
+    assertThrows("Should fail with invalid length", IllegalStateException.class,
+      () -> Types.required(FIXED_LEN_BYTE_ARRAY).length(10).as(float16Type()).named("float16_field").toString());
+    assertThrows("Should fail with invalid type", IllegalStateException.class,
+      () -> Types.required(BINARY).as(float16Type()).named("float16_field").toString());
   }
 
   /**
